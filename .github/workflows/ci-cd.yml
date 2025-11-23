@@ -32,29 +32,24 @@ jobs:
         run: npm run build
 
       - name: Upload artifact (build)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v2
         with:
-          name: vite-dist
-          path: dist
+          path: ./dist
 
   deploy:
     needs: build-test-lint
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Download artifact (build)
-        uses: actions/download-artifact@v4
-        with:
-          name: vite-dist
-          path: dist
-      - name: Install Netlify CLI
-        run: npm install -g netlify-cli
-
-      - name: Netlify Deploy
-        run: netlify deploy --prod --dir=dist --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
