@@ -50,10 +50,11 @@ jobs:
         with:
           name: vite-dist
           path: dist
-      - name: Deploy to Netlify
-        uses: jsmrcaga/action-netlify-deploy@v2
-        with:
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Netlify Deploy
+        run: netlify deploy --prod --dir=dist --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN
+        env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_DEPLOY_TO_PROD: true
-          NETLIFY_DIR: dist
