@@ -33,7 +33,7 @@ jobs:
 
       # IMPORTANT CHANGE HERE:
       - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist
 
